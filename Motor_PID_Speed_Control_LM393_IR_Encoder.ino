@@ -1,8 +1,8 @@
 #include <PID_v1.h>
 
-double kP = 0.01;
-double kI = 0.026;
-double kD = 0.0009;
+double kP = 0.05;
+double kI = 0.06;
+double kD = 0.0002;
 
 double setpoint, input, output;   // PID variables
 PID pid(&input, &output, &setpoint, kP, kI, kD, DIRECT); // PID setup
@@ -72,7 +72,7 @@ ISR(TIMER1_OVF_vect)                    // interrupt service routine for overflo
 
 {
    
-  rotation = (counter / 20.0);
+  rotation = (counter / (20.0));
   RPM = rotation*60;
   Serial.print("Setpoint:");  
   Serial.print(desired_speed/10);
