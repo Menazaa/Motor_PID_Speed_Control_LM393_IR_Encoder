@@ -1,8 +1,8 @@
 #include <PID_v1.h>
 
-double kP = 150;
-double kI = 300;
-double kD = 10;
+double kP = 0.01;
+double kI = 0.026;
+double kD = 0.0009;
 
 double setpoint, input, output;   // PID variables
 PID pid(&input, &output, &setpoint, kP, kI, kD, DIRECT); // PID setup
@@ -10,16 +10,16 @@ PID pid(&input, &output, &setpoint, kP, kI, kD, DIRECT); // PID setup
 
 
 
-unsigned int counter=0;
+double counter=0;
 
 int Motor = 6;  // Motor Driver Pin
-int motorspeed;
-int desired_speed = 0;
-int rotation;
-int RPM;
+double motorspeed;
+double desired_speed = 0;
+double rotation;
+double RPM;
 
 
-int value = 49910;   //Preload timer value (49910 for 1 seconds)
+float value = 49911;   //Preload timer value (49910 for 1 seconds)
 
 
 int potvalue;
@@ -61,9 +61,9 @@ void setup()
 
 
   // PID Setup
-    pid.SetMode(AUTOMATIC);
+    pid.SetMode(1);
     pid.SetOutputLimits(0,255);
-    pid.SetSampleTime(10);
+    pid.SetSampleTime(1);
 
 
 } 
@@ -71,16 +71,18 @@ void setup()
 ISR(TIMER1_OVF_vect)                    // interrupt service routine for overflow
 
 {
-  
-  Serial.print("Motor Speed: "); 
-  rotation = (counter / 20);  // divide by number of holes in Disc
-  Serial.print(rotation,DEC);  
-  Serial.println(" RPS"); 
+   
+  rotation = (counter / 20.0);
   RPM = rotation*60;
-  Serial.print(RPM,DEC);  
-  Serial.println(" RPM"); 
-  Serial.print("Desired Speed: ");
-  Serial.print(desired_speed,DEC);
+  Serial.print("Setpoint:");  
+  Serial.print(desired_speed/10);
+  Serial.print(','); 
+  Serial.print("Measured Speed:");  
+  Serial.print(RPM/10);
+  Serial.print(',');
+  Serial.println();
+
+  
   TCNT1 = value;                                // preload timer
   counter=0;  //  reset counter to zero
 
@@ -90,11 +92,11 @@ ISR(TIMER1_OVF_vect)                    // interrupt service routine for overflo
 void loop()
 {
   potvalue = analogRead(A0);  // Potentiometer connected to Pin A0
-  desired_speed = map(potvalue, 0, 1023, 0, 50);
+  desired_speed = map(potvalue,0,1023,0,2000);
 
   // PID vars
   setpoint =  desired_speed ; 
-  input = rotation;
+  input = RPM;
   pid.Compute();
   motorspeed = output;
   analogWrite(Motor, motorspeed);  // set speed of motor (0-255)
