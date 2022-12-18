@@ -1,8 +1,8 @@
 #include <PID_v1.h>
 
-double kP = 0.05;
-double kI = 0.06;
-double kD = 0.0002;
+double kP = 0.009;
+double kI = 0.02;
+double kD = 1.4;
 
 double setpoint, input, output;   // PID variables
 PID pid(&input, &output, &setpoint, kP, kI, kD, DIRECT); // PID setup
@@ -35,7 +35,7 @@ void setup()
 {
 
 
-  Serial.begin(9600);
+  Serial.begin(115200);
   
   pinMode(Motor, OUTPUT); 
 
