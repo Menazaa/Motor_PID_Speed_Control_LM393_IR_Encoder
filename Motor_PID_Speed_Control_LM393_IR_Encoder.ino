@@ -19,7 +19,7 @@ double rotation;
 double RPM;
 
 
-float value = 49911;   //Preload timer value (49910 for 1 seconds)
+float value = 49910;   //Preload timer value (49910 for 1 seconds)  for 2 sec 34285
 
 
 int potvalue;
